@@ -3,7 +3,22 @@ const dgram = require('dgram');
 // CONSTANTS
 const E = process.env;
 const TIME_OFFSET    = parseFloat(E.TIME_OFFSET    || '1');  // ms
+const RECIEVE_DELAY  = parseFloat(E.RECIEVE_DELAY  || '1');  // ms
 const RESPONSE_DELAY = parseFloat(E.RESPONSE_DELAY || '5');  // ms
+const SEND_DELAY     = parseFloat(E.SEND_DELAY     || '1');  // ms
+
+
+
+
+// UTILITY
+// Sleep for a number of milliseconds.
+async function sleep(ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+}
 
 
 
@@ -24,17 +39,23 @@ function main() {
   });
 
   // A new datagram has arrived.
-  server.on('message', (msg, rinfo) => {
+  server.on('message', async (msg, rinfo) => {
     console.log(`Server got '${msg}' from ${rinfo.address}:${rinfo.port}`);
+    // Simulate a delay in recieving the message.
+    if (RECIEVE_DELAY) await sleep(RECIEVE_DELAY);
+    // Get the recieved time.
     var recievedDate = new Date(new Date().getTime() + TIME_OFFSET);
     var recieved     = recievedDate.toISOString();
-    // Respond with the current time after a delay.
-    setTimeout(() => {
-      var sentDate = new Date(new Date().getTime() + TIME_OFFSET);
-      var sent     = sentDate.toISOString();
-      var out = Buffer.from(JSON.stringify({recieved, sent}));
-      server.send(out, 0, out.length, rinfo.port, rinfo.address, (err, bytes) => {});
-    }, RESPONSE_DELAY);
+    // Simulate a delay in responding to the message.
+    if (RESPONSE_DELAY) await sleep(RESPONSE_DELAY);
+    // Get the sent time.
+    var sentDate = new Date(new Date().getTime() + TIME_OFFSET);
+    var sent     = sentDate.toISOString();
+    // Simulate a delay in sending the response.
+    if (SEND_DELAY)     await sleep(SEND_DELAY);
+    // Send the response.
+    var out = Buffer.from(JSON.stringify({recieved, sent}));
+    server.send(out, 0, out.length, rinfo.port, rinfo.address, (err, bytes) => {});
   });
 
   // The socket is addressable and can receive datagrams.
