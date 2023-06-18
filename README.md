@@ -110,6 +110,7 @@ $ node src/client.mjs
 
 [![](https://img.youtube.com/vi/BAo5C2qbLq8/maxresdefault.jpg)](https://www.youtube.com/watch?v=BAo5C2qbLq8)<br>
 [![ORG](https://img.shields.io/badge/org-javascriptf-green?logo=Org)](https://javascriptf.github.io)
+[![DOI](https://zenodo.org/badge/650028750.svg)](https://zenodo.org/badge/latestdoi/650028750)
 
 
 [NTP]: https://en.wikipedia.org/wiki/Network_Time_Protocol
